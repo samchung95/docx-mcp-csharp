@@ -76,6 +76,19 @@ v1 repo: https://github.com/samchung95/docx-mcp
 - **[Roslyn Scripting](https://github.com/dotnet/roslyn)** — `Microsoft.CodeAnalysis.CSharp.Scripting` for runtime C# execution
 - **Docker** — multi-stage build for zero-install deployment
 
+## Development Notes
+
+**Primary dev machine is Windows.** This causes some known friction:
+
+- **Docker volume permissions:** Windows file ownership doesn't map cleanly to Linux container UIDs. Files created inside the container may appear as root-owned on the host, or the container may fail to write to mounted volumes. Workarounds:
+  - Use `--user $(id -u):$(id -g)` when running containers (doesn't apply on Windows natively)
+  - Set permissive permissions on the mounted directory
+  - Use a named volume instead of a bind mount for working files
+- **File I/O path separators:** Windows uses `\`, .NET inside Docker uses `/`. Always use `Path.Combine()` or forward slashes in tool parameters — never hardcode `\`.
+- **File locking:** Windows locks open files more aggressively than Linux. If a .docx is open in Word, the MCP server (or Docker container) may fail to read/write it. Close Word before running tools against the same file.
+- **Line endings:** Git may auto-convert `LF` to `CRLF` on checkout. The `.gitattributes` or `git config core.autocrlf` setting matters for Dockerfile and shell scripts — these must stay `LF`.
+- **Docker Desktop required:** Docker commands assume Docker Desktop for Windows is installed and running with WSL 2 backend.
+
 ## License
 
 MIT
