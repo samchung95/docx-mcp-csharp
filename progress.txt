@@ -1,0 +1,8 @@
+## Codebase Patterns
+- Quality check: `dotnet build` must succeed with no errors
+- MCP SDK: `ModelContextProtocol` NuGet package for C# MCP server
+- OpenXML SDK: `DocumentFormat.OpenXml` v3.x for document manipulation
+- Roslyn scripting: `Microsoft.CodeAnalysis.CSharp.Scripting` for execute_openxml
+- Tool pattern: return structured JSON on success, error string on failure
+- Docker: multi-stage build with sdk:8.0 (build) + runtime:8.0 (run)
+- stdio transport for Claude Desktop / Claude Code integration
